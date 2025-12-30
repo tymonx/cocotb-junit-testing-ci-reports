@@ -1,6 +1,10 @@
 # SPDX-FileCopyrightText: 2025 Tymoteusz Blazejczyk <tymoteusz.blazejczyk@tymonx.com>
 # SPDX-License-Identifier: Apache-2.0
 
+permissions:
+    contents: read
+    checks: write
+
 name: Cocotb JUnit - Testing CI Reports
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [push, workflow_dispatch]
