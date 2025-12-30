@@ -17,6 +17,8 @@ jobs:
             env:
                 COCOTB_PATHS_RELATIVE_TO: ${GITHUB_WORKSPACE}
                 HDL_TOPLEVEL_LANG: vhdl
+                TOPLEVEL_LANG: ${HDL_TOPLEVEL_LANG}
+                WAVES: 1
                 SIM: ghdl
                 SIM_ARGS: --wave=wave.ghw
         steps:

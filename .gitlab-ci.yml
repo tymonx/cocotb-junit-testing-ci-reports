@@ -23,6 +23,7 @@ test-with-makefile:
     extends: .common
     variables:
         COCOTB_PATHS_RELATIVE_TO: ${CI_PROJECT_DIR}
+        TOPLEVEL_LANG: ${HDL_TOPLEVEL_LANG}
         SIM_ARGS: --wave=wave.ghw
     artifacts:
         reports:
