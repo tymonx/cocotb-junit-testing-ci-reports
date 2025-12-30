@@ -21,7 +21,8 @@ jobs:
             - name: Checkout Code
               uses: actions/checkout@v4
             - run: uv venv
-            - run: . .venv/bin/activate
+            - name: Activate virtual environment
+              run: echo PATH=${GITHUB_WORKSPACE}/.venv/bin:$PATH >> $GITHUB_ENV
             - run: uv pip install git+https://github.com/tymonx/cocotb.git@chore/xunit-reporter pytest
             - run: COCOTB_ATTACHMENTS=examples/simple_dff/wave.ghw make -C examples/simple_dff
             - name: Publish Test Report
