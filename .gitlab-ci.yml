@@ -7,6 +7,7 @@
     variables:
         HDL_TOPLEVEL_LANG: vhdl
         TOPLEVEL_LANG: ${HDL_TOPLEVEL_LANG}
+        WAVES: 1
         SIM: ghdl
     artifacts:
         when: always
@@ -31,12 +32,18 @@ test-with-runner:
     extends: .common
     variables:
         COCOTB_PATHS_RELATIVE_TO: ${CI_PROJET_DIR}
-        WAVES: 1
     script:
-        - pytest -p no:cocotb_tools.pytest.plugin
+        - >-
+            pytest
+            -p no:cocotb_tools.pytest.plugin
+            --override-ini=junit_family=xunit1
+            --junit-xml=junit.xml
 
 test-with-pytest-plugin:
     extends: .common
+    artifacts:
+        reports:
+            junit: 'junit.xml'
     script:
         - >-
             pytest
@@ -44,4 +51,3 @@ test-with-pytest-plugin:
             --override-ini=junit_logging=system-out
             --override-ini=junit_family=xunit1
             --junit-xml=junit.xml
-            --cocotb-waves
