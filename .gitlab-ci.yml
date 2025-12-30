@@ -23,7 +23,7 @@
 test-with-makefile:
     extends: .common
     variables:
-        COCOTB_PATHS_RELATIVE_TO: ${CI_PROJET_DIR}
+        COCOTB_PATHS_RELATIVE_TO: ${CI_PROJECT_DIR}
         SIM_ARGS: --wave=wave.ghw
     script:
         - COCOTB_ATTACHMENTS=examples/simple_dff/wave.ghw make -C examples/simple_dff
@@ -31,7 +31,7 @@ test-with-makefile:
 test-with-runner:
     extends: .common
     variables:
-        COCOTB_PATHS_RELATIVE_TO: ${CI_PROJET_DIR}
+        COCOTB_PATHS_RELATIVE_TO: ${CI_PROJECT_DIR}
     script:
         - >-
             pytest
