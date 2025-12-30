@@ -9,6 +9,7 @@
 
 # Don't ignore project files
 !.gitignore
+!Jenkinsfile
 !Makefile
 !*.yml
 !*.md
