@@ -1,0 +1,47 @@
+# SPDX-FileCopyrightText: 2025 Tymoteusz Blazejczyk <tymoteusz.blazejczyk@tymonx.com>
+# SPDX-License-Identifier: Apache-2.0
+
+.common:
+    image: registry.gitlab.com/tymonx/ghdl:latest
+    when: manual
+    variables:
+        HDL_TOPLEVEL_LANG: vhdl
+        TOPLEVEL_LANG: ${HDL_TOPLEVEL_LANG}
+        SIM: ghdl
+    artifacts:
+        when: always
+        reports:
+            junit: ['**/results.xml', '**/*.result.xml', '**/junit.xml']
+        paths:
+            - '**/*.ghw'
+    before_script:
+        - uv venv
+        - . .venv/bin/activate
+        - uv pip install git+https://github.com/tymonx/cocotb.git@chore/xunit-reporter pytest
+
+test-with-makefile:
+    extends: .common
+    variables:
+        COCOTB_PATHS_RELATIVE_TO: ${CI_PROJET_DIR}
+        SIM_ARGS: --wave=wave.ghw
+    script:
+        - COCOTB_ATTACHMENTS=examples/simple_dff/wave.ghw make -C examples/simple_dff
+
+test-with-runner:
+    extends: .common
+    variables:
+        COCOTB_PATHS_RELATIVE_TO: ${CI_PROJET_DIR}
+        WAVES: 1
+    script:
+        - pytest -p no:cocotb_tools.pytest.plugin
+
+test-with-pytest-plugin:
+    extends: .common
+    script:
+        - >-
+            pytest
+            -p cocotb_tools.pytest.plugin
+            --override-ini=junit_logging=system-out
+            --override-ini=junit_family=xunit1
+            --junit-xml=junit.xml
+            --cocotb-waves

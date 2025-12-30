@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: 2025 Tymoteusz Blazejczyk <tymoteusz.blazejczyk@tymonx.com>
+# SPDX-License-Identifier: Apache-2.0
+
+# Ignore everything by default
+*
+
+# Don't ignore directories
+!*/
+
+# Don't ignore project files
+!.gitignore
+!Makefile
+!*.yml
+!*.md
+!*.py
+!*.svh
+!*.sv
+!*.vh
+!*.v
+!*.vhdl
+!*.vhd
