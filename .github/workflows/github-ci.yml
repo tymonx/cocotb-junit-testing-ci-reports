@@ -17,20 +17,89 @@ jobs:
             env:
                 COCOTB_PATHS_RELATIVE_TO: ${GITHUB_WORKSPACE}
                 HDL_TOPLEVEL_LANG: vhdl
-                TOPLEVEL_LANG: ${HDL_TOPLEVEL_LANG}
-                WAVES: 1
                 SIM: ghdl
                 SIM_ARGS: --wave=wave.ghw
         steps:
             - name: Checkout Code
               uses: actions/checkout@v4
-            - run: uv venv
-            - name: Activate virtual environment
+
+            - name: Create Python virtual environment
+              run: uv venv
+
+            - name: Activate created Python virtual environment
               run: echo PATH=${GITHUB_WORKSPACE}/.venv/bin:$PATH >> $GITHUB_ENV
-            - run: uv pip install git+https://github.com/tymonx/cocotb.git@chore/xunit-reporter pytest
-            - run: COCOTB_ATTACHMENTS=examples/simple_dff/wave.ghw make -C examples/simple_dff
+
+            - name: Install Cocotb and Pytest
+              run: uv pip install git+https://github.com/tymonx/cocotb.git@chore/xunit-reporter pytest
+
+            - name: Run Tests
+              run: COCOTB_ATTACHMENTS=examples/simple_dff/wave.ghw make -C examples/simple_dff
+
             - name: Publish Test Report
               uses: mikepenz/action-junit-report@v5
               if: success() || failure() # always run even if the previous step fails
               with:
                   report_paths: '**/results.xml'
+
+    test-with-runner:
+        runs-on: ubuntu-latest
+        container:
+            image: registry.gitlab.com/tymonx/ghdl:latest
+            options: --cpus 1
+            env:
+                COCOTB_PATHS_RELATIVE_TO: ${GITHUB_WORKSPACE}
+                HDL_TOPLEVEL_LANG: vhdl
+                WAVES: 1
+                SIM: ghdl
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v4
+
+            - name: Create Python virtual environment
+              run: uv venv
+
+            - name: Activate created Python virtual environment
+              run: echo PATH=${GITHUB_WORKSPACE}/.venv/bin:$PATH >> $GITHUB_ENV
+
+            - name: Install Cocotb and Pytest
+              run: uv pip install git+https://github.com/tymonx/cocotb.git@chore/xunit-reporter pytest
+
+            - name: Run Tests
+              run: pytest -p no:cocotb_tools.pytest.plugin --junit-xml=junit.result.xml
+
+            - name: Publish Test Report
+              uses: mikepenz/action-junit-report@v5
+              if: success() || failure() # always run even if the previous step fails
+              with:
+                  report_paths: '**/*.result.xml'
+
+    test-with-pytest-plugin:
+        runs-on: ubuntu-latest
+        container:
+            image: registry.gitlab.com/tymonx/ghdl:latest
+            options: --cpus 1
+            env:
+                HDL_TOPLEVEL_LANG: vhdl
+                WAVES: 1
+                SIM: ghdl
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v4
+
+            - name: Create Python virtual environment
+              run: uv venv
+
+            - name: Activate created Python virtual environment
+              run: echo PATH=${GITHUB_WORKSPACE}/.venv/bin:$PATH >> $GITHUB_ENV
+
+            - name: Install Cocotb and Pytest
+              run: uv pip install git+https://github.com/tymonx/cocotb.git@chore/xunit-reporter pytest
+
+            - name: Run Tests
+              run: pytest -p cocotb_tools.pytest.plugin --override-ini=junit_logging=all --junit-xml=junit.xml
+
+            - name: Publish Test Report
+              uses: mikepenz/action-junit-report@v5
+              if: success() || failure() # always run even if the previous step fails
+              with:
+                  report_paths: 'junit.xml'

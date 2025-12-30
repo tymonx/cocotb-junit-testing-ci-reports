@@ -6,7 +6,6 @@
     when: manual
     variables:
         HDL_TOPLEVEL_LANG: vhdl
-        TOPLEVEL_LANG: ${HDL_TOPLEVEL_LANG}
         WAVES: 1
         SIM: ghdl
     artifacts:
@@ -25,6 +24,9 @@ test-with-makefile:
     variables:
         COCOTB_PATHS_RELATIVE_TO: ${CI_PROJECT_DIR}
         SIM_ARGS: --wave=wave.ghw
+    artifacts:
+        reports:
+            junit: '**/results.xml'
     script:
         - COCOTB_ATTACHMENTS=examples/simple_dff/wave.ghw make -C examples/simple_dff
 
@@ -32,6 +34,9 @@ test-with-runner:
     extends: .common
     variables:
         COCOTB_PATHS_RELATIVE_TO: ${CI_PROJECT_DIR}
+    artifacts:
+        reports:
+            junit: ['junit.xml', '**/*.result.xml']
     script:
         - >-
             pytest
