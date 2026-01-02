@@ -6,14 +6,12 @@
 
 WORKDIR = $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
-COCOTB_RESULTS_RELATIVE_TO ?= $(WORKDIR)
 HDL_TOPLEVEL_LANG ?= vhdl
 TOPLEVEL_LANG ?= $(HDL_TOPLEVEL_LANG)
 WAVES ?= 1
 SIM ?= ghdl
 SIM_ARGS ?= --wave=wave.ghw
 
-export COCOTB_RESULTS_RELATIVE_TO
 export HDL_TOPLEVEL_LANG
 export TOPLEVEL_LANG
 export WAVES
