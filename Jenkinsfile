@@ -16,7 +16,7 @@ node {
     git url: 'https://github.com/tymonx/cocotb-junit-testing-ci-reports.git', branch: 'main'
     try {
         sh 'podman run --rm --volume ${WORKSPACE}:${WORKSPACE} --workdir ${WORKSPACE} registry.gitlab.com/tymonx/ghdl:latest make test-with-runner'
-    } catch (Exception e) {
+    } finally {
         junit testDataPublishers: [[$class: 'AttachmentPublisher']], testResults: '**/*.result.xml'
     }
 }
